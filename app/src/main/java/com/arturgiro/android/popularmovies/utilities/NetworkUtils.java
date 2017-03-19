@@ -2,6 +2,7 @@ package com.arturgiro.android.popularmovies.utilities;
 
 
 import android.net.Uri;
+import com.arturgiro.android.popularmovies.BuildConfig;
 import android.util.Log;
 
 import java.io.IOException;
@@ -32,7 +33,8 @@ public final class NetworkUtils {
                 .appendPath(PATH1_PARAM)
                 .appendPath(PATH2_PARAM)
                 .appendPath(sortMethod)
-                .appendQueryParameter(API_KEY_PARAM, "123")
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+//                .appendQueryParameter(API_KEY_PARAM, "123")
                 .build();
 
         URL url = null;
