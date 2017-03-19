@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
@@ -15,11 +18,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      * Cache of the children views for a movie list item.
      */
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mMovieTextView;
+        public final ImageView mPosterImageView;
 
         public MoviesAdapterViewHolder(View view) {
             super(view);
-            mMovieTextView = (TextView) view.findViewById(R.id.tv_movie_data);
+            mPosterImageView = (ImageView) view.findViewById(R.id.iv_poster);
             //view.setOnClickListener(this);
         }
     }
@@ -38,8 +41,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
-        String movie = mMoviesData[position];
-        holder.mMovieTextView.setText(movie);
+        String posterPath = mMoviesData[position];
+
+        Picasso.with(holder.mPosterImageView.getContext()).load("http://image.tmdb.org/t/p/w500/"+posterPath).into(holder.mPosterImageView);
     }
 
     @Override

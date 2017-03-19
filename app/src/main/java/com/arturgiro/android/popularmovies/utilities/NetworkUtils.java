@@ -34,7 +34,6 @@ public final class NetworkUtils {
                 .appendPath(PATH2_PARAM)
                 .appendPath(sortMethod)
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
-//                .appendQueryParameter(API_KEY_PARAM, "123")
                 .build();
 
         URL url = null;
