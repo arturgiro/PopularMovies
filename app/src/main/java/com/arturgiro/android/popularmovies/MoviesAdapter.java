@@ -11,13 +11,17 @@ import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Set;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
     private final String POSTER_SIZE = "w342";
 
+    //keep the ids of the movies
+    private int[] mIds;
     //keep the poster's path of the movies
-    private String[] mMoviesData;
+    private String[] mPosters;
 
     private final MoviesAdapterOnClickHandler mClickHandler;
 
@@ -42,10 +46,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      * Cache of the children views for a movie list item.
      */
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public int mMovieId;
         public final ImageView mPosterImageView;
 
         public MoviesAdapterViewHolder(View view) {
             super(view);
+            mMovieId = -1;
             mPosterImageView = (ImageView) view.findViewById(R.id.iv_poster);
             view.setOnClickListener(this);
         }
@@ -57,9 +63,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
          */
         @Override
         public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
+            //int adapterPosition = getAdapterPosition();
             //int movieId = mMoviesData[adapterPosition];
-            mClickHandler.onClick(adapterPosition);
+            mClickHandler.onClick(mMovieId);
         }
     }
 
@@ -75,7 +81,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
-        String posterPath = mMoviesData[position];
+        holder.mMovieId = mIds[position];
+        String posterPath = mPosters[position];
         Context context = holder.mPosterImageView.getContext();
         URL posterUrl = NetworkUtils.buildPosterUrl(posterPath, POSTER_SIZE);
         Picasso.with(context).load(posterUrl.toString()).into(holder.mPosterImageView);
@@ -83,13 +90,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public int getItemCount() {
-        if (null == mMoviesData) return 0;
-        return mMoviesData.length;
+        if (null == mPosters) return 0;
+        return mPosters.length;
     }
 
-    public void setmMoviesData(String[] moviesData) {
-        mMoviesData = moviesData;
+    public void setmMoviesData(HashMap<Integer, String> moviesData) {
+        mIds = toIntArray(moviesData.keySet());
+        mPosters = moviesData.values().toArray(new String[moviesData.size()]);
         notifyDataSetChanged();
+    }
+
+    //Converts an Integer set to an int array
+    private int[] toIntArray(Set<Integer> set) {
+        int[] ret = new int[set.size()];
+        int i = 0;
+        for (Integer e : set)
+            ret[i++] = e.intValue();
+        return ret;
     }
 
 }

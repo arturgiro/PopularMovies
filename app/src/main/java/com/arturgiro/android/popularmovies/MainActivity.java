@@ -20,6 +20,7 @@ import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 
 import java.net.URL;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler{
 
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         startActivity(intentToStartDetailActivity);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, HashMap<Integer, String>> {
 
         @Override
         protected void onPreExecute() {
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected HashMap<Integer, String> doInBackground(String... params) {
 
             /* If there's no sort criteria, there's nothing to look up. */
             if (params.length == 0) {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 String jsonMoviesResponse = NetworkUtils
                         .getResponseFromHttpUrl(moviesRequestUrl);
 
-                String[] simpleJsonMoviesData = TMDBJsonUtils
+                HashMap<Integer, String> simpleJsonMoviesData = TMDBJsonUtils
                         .getMoviesFromJson(jsonMoviesResponse);
 
                 return simpleJsonMoviesData;
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
 
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(HashMap<Integer, String> movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMoviesDataView();
