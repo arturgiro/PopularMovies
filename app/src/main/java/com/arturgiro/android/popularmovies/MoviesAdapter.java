@@ -2,12 +2,10 @@ package com.arturgiro.android.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -16,7 +14,7 @@ import java.net.URL;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
-    private final String POSTER_SIZE = "w500";
+    private final String POSTER_SIZE = "w342";
 
     //keep the poster's path of the movies
     private String[] mMoviesData;
