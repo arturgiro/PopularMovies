@@ -1,11 +1,14 @@
 package com.arturgiro.android.popularmovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,7 +18,7 @@ import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -34,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);//TODO VErificar esse número
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setHasFixedSize(true);
 
-        mMoviestAdapter = new MoviesAdapter();
+        mMoviestAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mMoviestAdapter);
 
         loadMoviesData();
@@ -58,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMoviesDataView() {
+       //Hide the error message
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        //show the movies
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -67,6 +72,41 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            //startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * This method is overridden by our MainActivity class in order to handle RecyclerView item
+     * clicks.
+     *
+     * @param movieId The id for the movie that was clicked
+     */
+    @Override
+    public void onClick(int movieId) {
+        Context context = this;
+        Class destinationClass = MovieDetailActivity.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        intentToStartDetailActivity.putExtra(Intent.EXTRA_INDEX, movieId);
+        startActivity(intentToStartDetailActivity);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
@@ -94,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                         .getResponseFromHttpUrl(moviesRequestUrl);
 
                 String[] simpleJsonMoviesData = TMDBJsonUtils
-                        .getMoviesFromJson(MainActivity.this, jsonMoviesResponse);
+                        .getMoviesFromJson(jsonMoviesResponse);
 
                 return simpleJsonMoviesData;
 

@@ -17,6 +17,7 @@ public final class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     static final String MOVIES_BASE_URL = "http://api.themoviedb.org";
+    static final String POSTERS_BASE_URL = "http://image.tmdb.org/t/p";
 
     final static String PATH1_PARAM = "3";
     final static String PATH2_PARAM = "movie";
@@ -42,8 +43,6 @@ public final class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        Log.v(TAG, "Built URI " + url);
 
         return url;
     }
@@ -73,4 +72,30 @@ public final class NetworkUtils {
             urlConnection.disconnect();
         }
     }
+
+    /**
+     * Builds the URL used to retrive a poster image to a movie.
+     *
+     * @param posterPath The path for the poster.
+     * @param posterSize The size of the image to be requested
+     *                   which will be one of the following: "w92", "w154", "w185", "w342", "w500",
+     *                   "w780", or "original"
+     * @return The URL to use to query the image.
+     */
+    public static URL buildPosterUrl(String posterPath, String posterSize) {
+        Uri builtUri = Uri.parse(POSTERS_BASE_URL).buildUpon()
+                .appendPath(posterSize)
+                .appendEncodedPath(posterPath)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
 }
