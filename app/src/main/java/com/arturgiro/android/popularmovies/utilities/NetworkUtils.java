@@ -1,10 +1,9 @@
 package com.arturgiro.android.popularmovies.utilities;
 
 
-import android.content.Intent;
 import android.net.Uri;
+
 import com.arturgiro.android.popularmovies.BuildConfig;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +22,7 @@ public final class NetworkUtils {
     final static String PATH1_PARAM = "3";
     final static String PATH_MOVIE = "movie";
     final static String API_KEY_PARAM = "api_key";
+    final static String PAGE_PARAM = "page";
 
     /**
      * Builds the URL used to talk to the movie server.
@@ -30,12 +30,13 @@ public final class NetworkUtils {
      * @param sortMethod The movies order that will be queried for.
      * @return The URL to use to query the movie server.
      */
-    public static URL buildUrl(String sortMethod) {
+    public static URL buildUrl(String sortMethod, int pageNumber) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                 .appendPath(PATH1_PARAM)
                 .appendPath(PATH_MOVIE)
                 .appendPath(sortMethod)
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .appendQueryParameter(PAGE_PARAM,String.valueOf(pageNumber))
                 .build();
 
         URL url = null;

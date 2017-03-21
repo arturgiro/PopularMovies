@@ -115,4 +115,31 @@ public class TMDBJsonUtils {
 
         return details;
     }
+
+    public static int getPageCount(String moviesJsonStr)throws JSONException
+    {
+        final String OWM_MESSAGE_CODE = "cod";
+        final String PAGE_COUNT = "total_pages";
+
+        JSONObject completeJson = new JSONObject(moviesJsonStr);
+
+        /* Is there an error? */
+        if (completeJson.has(OWM_MESSAGE_CODE)) {
+            int errorCode = completeJson.getInt(OWM_MESSAGE_CODE);
+
+            switch (errorCode) {
+                case HttpURLConnection.HTTP_OK:
+                    break;
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    /* Location invalid */
+                    return 0;
+                default:
+                    /* Server probably down */
+                    return 0;
+            }
+        }
+
+        return completeJson.getInt(PAGE_COUNT);
+
+    }
 }

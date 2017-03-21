@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     private MoviesAdapter mMoviestAdapter;
 
+    private EndlessRecyclerViewScrollListener mScrollListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +54,32 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mMoviestAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mMoviestAdapter);
 
-        loadMoviesData();
+        // Retain an instance so that you can call `resetState()` for fresh searches
+       mScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadMoviesData(page);
+                Log.v("page:", String.valueOf(page));
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        mRecyclerView.addOnScrollListener(mScrollListener);
+
+        loadMoviesData(1);
     }
 
     /**
      * This method will get the user's preferred sort criteria, and then tell some
      * background method to get the movies data in the background.
      */
-    private void loadMoviesData() {
+    private void loadMoviesData(int page) {
         showMoviesDataView();
         //TODO - Implementar getPreferredSort
         String sort = "popular";//SunshinePreferences.getPreferredSort(this);
 
-        new FetchMoviesTask().execute(sort);
+        new FetchMoviesTask().execute(sort, String.valueOf(page));
     }
 
     private void showMoviesDataView() {
@@ -132,22 +148,37 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             }
 
             String sortMethod = params[0];
+            int pageNumber = Integer.parseInt(params[1]);
 
-            URL moviesRequestUrl = NetworkUtils.buildUrl(sortMethod);
+//            int totalPages = 0;
+            String jsonMoviesResponse = "";
+            HashMap<Integer, String> jsonMoviesData;
+            URL moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, pageNumber);
 
             try {
-                String jsonMoviesResponse = NetworkUtils
-                        .getResponseFromHttpUrl(moviesRequestUrl);
-
-                HashMap<Integer, String> simpleJsonMoviesData = TMDBJsonUtils
-                        .getMoviesFromJson(jsonMoviesResponse);
-
-                return simpleJsonMoviesData;
-
+                jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
+                jsonMoviesData = TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse);
+//                totalPages = TMDBJsonUtils.getPageCount(jsonMoviesResponse);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
+
+
+//            for (int i = 2; i <= totalPages; i++) {
+//                moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, i);
+//
+//                try {
+//                    jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
+//                    jsonMoviesData.putAll(TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse));
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    return null;
+//                }
+//            }
+
+            return jsonMoviesData;
         }
 
         @Override
