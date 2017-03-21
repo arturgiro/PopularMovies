@@ -1,6 +1,7 @@
 package com.arturgiro.android.popularmovies.utilities;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import com.arturgiro.android.popularmovies.BuildConfig;
 import android.util.Log;
@@ -20,7 +21,7 @@ public final class NetworkUtils {
     static final String POSTERS_BASE_URL = "http://image.tmdb.org/t/p";
 
     final static String PATH1_PARAM = "3";
-    final static String PATH2_PARAM = "movie";
+    final static String PATH_MOVIE = "movie";
     final static String API_KEY_PARAM = "api_key";
 
     /**
@@ -32,7 +33,7 @@ public final class NetworkUtils {
     public static URL buildUrl(String sortMethod) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                 .appendPath(PATH1_PARAM)
-                .appendPath(PATH2_PARAM)
+                .appendPath(PATH_MOVIE)
                 .appendPath(sortMethod)
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                 .build();
@@ -98,4 +99,27 @@ public final class NetworkUtils {
         return url;
     }
 
+    /**
+     * Builds the URL used to retrive the details of a movie.
+     *
+     * @param movieId Id of the movie we want to retrive.
+     * @return The URL to use to query the movie.
+     */
+    public static URL buildMovieUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(PATH1_PARAM)
+                .appendPath(PATH_MOVIE)
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
 }
