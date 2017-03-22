@@ -5,15 +5,15 @@
     <string name="pref_settings_title">Sort Order</string>
     <string name="pref_order_key">sort</string>
 
-    <string name="pref_sort_label_popular">Most popular</string>
-    <string name="pref_sort_label_rated">Top rated</string>
-    <string name="pref_sort_popular">popular</string>
-    <string name="pref_sort_rated">rated</string>
+    <string name="pref_sort_label_popular">popular</string>
+    <string name="pref_sort_label_rated">top_rated</string>
+    <string name="pref_sort_popular">Most Popular</string>
+    <string name="pref_sort_rated">Top rated</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
+    <!-- Example General preferences -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
@@ -36,7 +36,7 @@
         <item>-1</item>
     </string-array>
 
-    <!-- Example settings for Data & Sync -->
+    <!-- Example preferences for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
@@ -73,7 +73,7 @@
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
-    <!-- Example settings for Notifications -->
+    <!-- Example preferences for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
 
     <string name="pref_title_new_message_notifications">New message notifications</string>

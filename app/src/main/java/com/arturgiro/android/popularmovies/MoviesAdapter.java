@@ -99,7 +99,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      *
      * @param moviesData The new movies to be added to de adapter
      */
-    public void setmMoviesData(HashMap<Integer, String> moviesData) {
+    public void setMoviesData(HashMap<Integer, String> moviesData) {
 
         int[] idAux = mIds;
         String[] postersAux = mPosters;
@@ -128,6 +128,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         for (Integer e : set)
             ret[i++] = e.intValue();
         return ret;
+    }
+
+    public void resetMovieData() {
+        // 1. First, clear the array of data
+        mIds = null;
+        mPosters = null;
+
+        // 2. Notify the adapter of the update
+        notifyDataSetChanged(); // or notifyItemRangeRemoved
+
     }
 
 }

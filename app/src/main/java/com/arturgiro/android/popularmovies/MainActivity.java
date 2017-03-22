@@ -2,15 +2,16 @@ package com.arturgiro.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +24,7 @@ import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 import java.net.URL;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler{
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
@@ -61,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 loadMoviesData(page);
-                Log.v("page:", String.valueOf(page));
             }
         };
+
         // Adds the scroll listener to RecyclerView
         mRecyclerView.addOnScrollListener(mScrollListener);
 
@@ -75,11 +80,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
      * background method to get the movies data in the background.
      */
     private void loadMoviesData(int page) {
-        showMoviesDataView();
-        //TODO - Implementar getPreferredSort
-        String sort = "popular";//SunshinePreferences.getPreferredSort(this);
 
-        new FetchMoviesTask().execute(sort, String.valueOf(page));
+        showMoviesDataView();
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortMethod = sharedPref.getString(getString(R.string.pref_order_key) , "");
+
+        new FetchMoviesTask().execute(sortMethod, String.valueOf(page));
     }
 
     private void showMoviesDataView() {
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            //startActivity(new Intent(this, SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -129,6 +136,19 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra(Intent.EXTRA_INDEX, movieId);
         startActivity(intentToStartDetailActivity);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if (key.equals(getString(R.string.pref_order_key))) {
+            // clear the array of data
+            mMoviestAdapter.resetMovieData();
+            // reset endless scroll listener when performing a new search
+            mScrollListener.resetState();
+
+            loadMoviesData(1);
+        }
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, HashMap<Integer, String>> {
@@ -161,20 +181,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 return null;
             }
 
-
-//            for (int i = 2; i <= totalPages; i++) {
-//                moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, i);
-//
-//                try {
-//                    jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
-//                    jsonMoviesData.putAll(TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse));
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    return null;
-//                }
-//            }
-
             return jsonMoviesData;
         }
 
@@ -183,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMoviesDataView();
-                mMoviestAdapter.setmMoviesData(movieData);
+                mMoviestAdapter.setMoviesData(movieData);
             } else {
                 showErrorMessage();
             }
