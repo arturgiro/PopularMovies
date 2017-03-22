@@ -94,9 +94,30 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         return mPosters.length;
     }
 
+    /**
+     * Add new movies info into the arrays of ids and posters.
+     *
+     * @param moviesData The new movies to be added to de adapter
+     */
     public void setmMoviesData(HashMap<Integer, String> moviesData) {
-        mIds = toIntArray(moviesData.keySet());
-        mPosters = moviesData.values().toArray(new String[moviesData.size()]);
+
+        int[] idAux = mIds;
+        String[] postersAux = mPosters;
+
+        int newSize = moviesData.size() + (mIds == null ? 0 : mIds.length);
+        mIds = new int[newSize];
+        mPosters = new String[newSize];
+
+        int index = 0;
+        if (idAux != null) {
+            System.arraycopy(idAux, 0, mIds, 0, idAux.length);
+            System.arraycopy(postersAux, 0, mPosters, 0, postersAux.length);
+            index = idAux.length;
+        }
+
+        System.arraycopy(toIntArray(moviesData.keySet()), 0, mIds, index, moviesData.size());
+        System.arraycopy(moviesData.values().toArray(), 0, mPosters, index, moviesData.size());
+
         notifyDataSetChanged();
     }
 

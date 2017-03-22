@@ -150,15 +150,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             String sortMethod = params[0];
             int pageNumber = Integer.parseInt(params[1]);
 
-//            int totalPages = 0;
-            String jsonMoviesResponse = "";
             HashMap<Integer, String> jsonMoviesData;
             URL moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, pageNumber);
 
             try {
-                jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
+                String jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
                 jsonMoviesData = TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse);
-//                totalPages = TMDBJsonUtils.getPageCount(jsonMoviesResponse);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
