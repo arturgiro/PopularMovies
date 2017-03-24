@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies.utilities;
+package com.arturgiro.android.popularmovies.network;
 
 
 import android.content.Context;
@@ -9,11 +9,12 @@ import android.net.Uri;
 import com.arturgiro.android.popularmovies.BuildConfig;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public final class NetworkUtils {
 
@@ -60,23 +61,13 @@ public final class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
+
 
     /**
      * Builds the URL used to retrive a poster image to a movie.

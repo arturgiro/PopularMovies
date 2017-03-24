@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.DimenRes;
@@ -22,17 +21,17 @@ import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
 import com.arturgiro.android.popularmovies.models.Movie;
-import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
-import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
+import com.arturgiro.android.popularmovies.network.AsyncTaskDelegate;
+import com.arturgiro.android.popularmovies.network.FetchMoviesTask;
+import com.arturgiro.android.popularmovies.network.NetworkUtils;
 import com.arturgiro.android.popularmovies.views.EndlessRecyclerViewScrollListener;
 import com.arturgiro.android.popularmovies.views.adapters.MoviesAdapter;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import static com.arturgiro.android.popularmovies.models.Movie.MOVIE_IDENTIFIER;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener{
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener, AsyncTaskDelegate{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         if(NetworkUtils.isNetworkConnected(this)) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             String sortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
-            new FetchMoviesTask().execute(sortMethod, String.valueOf(page));
+            new FetchMoviesTask(this).execute(sortMethod, String.valueOf(page));
         }
         else {
             Snackbar snackbar = Snackbar.make(coordinatorLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_INDEFINITE);
@@ -175,48 +174,22 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    @Override
+    public void processStart() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void processFinish(Object output) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
 
-        @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
+        ArrayList<Movie> movieData = (ArrayList<Movie>)output;
 
-            /* If there's no sort criteria, there's nothing to look up. */
-            if (params.length == 0) {
-                return null;
-            }
-
-            String sortMethod = params[0];
-            int pageNumber = Integer.parseInt(params[1]);
-            URL moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, pageNumber);
-
-            ArrayList<Movie> movies;
-
-            try {
-                String jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
-                movies = TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            return movies;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movieData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieData != null) {
-                showMoviesDataView();
-                mMoviestAdapter.setMoviesData(movieData);
-            } else {
-                showErrorMessage();
-            }
+        if (movieData != null) {
+            showMoviesDataView();
+            mMoviestAdapter.setMoviesData(movieData);
+        } else {
+            showErrorMessage();
         }
     }
 

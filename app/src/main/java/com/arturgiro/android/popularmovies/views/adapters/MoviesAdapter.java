@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.arturgiro.android.popularmovies.models.Movie;
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
+import com.arturgiro.android.popularmovies.network.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
