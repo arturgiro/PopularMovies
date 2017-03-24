@@ -1,18 +1,24 @@
 package com.arturgiro.android.popularmovies.utilities;
 
+import com.arturgiro.android.popularmovies.Movie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.net.HttpURLConnection;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class TMDBJsonUtils {
 
-    public static final String POSTER_PATH_FIELD = "poster_path";
-    public static final String USER_RATE_FIELD = "vote_average";
-    public static final String RELEASE_DATE_FIELD = "release_date";
-    public static final String ORIGINAL_TITLE_FIELD = "original_title";
-    public static final String OVERVIEW_FIELD = "overview";
+    //field names in XML
+    static final String MOVIE_ID_FIELD = "id";
+    static final String ORIGINAL_TITLE_FIELD = "original_title";
+    static final String POSTER_PATH_FIELD = "poster_path";
+    static final String OVERVIEW_FIELD = "overview";
+    static final String RATING_FIELD = "vote_average";
+    static final String RELEASE_DATE_FIELD = "release_date";
+
 
     /**
      * This method parses JSON from a web response and returns an array of Strings
@@ -24,15 +30,10 @@ public class TMDBJsonUtils {
      *
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    public static HashMap<Integer, String> getMoviesFromJson(String moviesJsonStr)throws JSONException
+    public static ArrayList<Movie> getMoviesFromJson(String moviesJsonStr)throws JSONException
     {
         final String OWM_MESSAGE_CODE = "cod";
         final String RESULTS_SECTION = "results";
-        final String POSTER_PATH_FIELD = "poster_path";
-        final String MOVIE_ID_FIELD = "id";
-
-        /* String array to hold each poster path String */
-        HashMap<Integer, String> posters = null;
 
         JSONObject completeJson = new JSONObject(moviesJsonStr);
 
@@ -52,94 +53,28 @@ public class TMDBJsonUtils {
             }
         }
 
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+
         //results has the info about the movies
         JSONArray resultsArray = completeJson.getJSONArray(RESULTS_SECTION);
-
-        posters = new HashMap<Integer, String>();
-
         for (int i = 0; i < resultsArray.length(); i++) {
 
             /* Get the JSON object representing the infos about one movie */
             JSONObject movieInfo = resultsArray.getJSONObject(i);
 
             int movieId = movieInfo.getInt(MOVIE_ID_FIELD);
+            String originalTitle = movieInfo.getString(ORIGINAL_TITLE_FIELD);
             String posterPath = movieInfo.getString(POSTER_PATH_FIELD);
+            String overview = movieInfo.getString(OVERVIEW_FIELD);
+            String rating = movieInfo.getString(RATING_FIELD);
+            String releaseDate = movieInfo.getString(RELEASE_DATE_FIELD);
 
-            posters.put(new Integer(movieId), posterPath);
+            Movie movie = new Movie(movieId, originalTitle, posterPath, overview, rating, releaseDate);
+
+            movies.add(movie);
         }
 
-        return posters;
+        return movies;
     }
 
-    /**
-     * This method parses JSON from a web response and returns an object with a movie details
-     *
-     * @param moveId the id of the movie you want the details
-     *
-     * @return Array of Strings containing poster's paths
-     *
-     * @throws JSONException If JSON data cannot be properly parsed
-     */
-    public static HashMap<String, String> getMovieDetailFromJson(String moviesJsonStr) throws JSONException {
-
-        final String OWM_MESSAGE_CODE = "cod";
-
-            /* String array to hold each poster path String */
-        HashMap<String, String> details = null;
-
-        JSONObject completeJson = new JSONObject(moviesJsonStr);
-
-        /* Is there an error? */
-        if (completeJson.has(OWM_MESSAGE_CODE)) {
-            int errorCode = completeJson.getInt(OWM_MESSAGE_CODE);
-
-            switch (errorCode) {
-                case HttpURLConnection.HTTP_OK:
-                    break;
-                case HttpURLConnection.HTTP_NOT_FOUND:
-                    /* Location invalid */
-                    return null;
-                default:
-                    /* Server probably down */
-                    return null;
-            }
-        }
-
-        details = new HashMap<String, String>();
-
-        details.put(POSTER_PATH_FIELD, completeJson.getString(POSTER_PATH_FIELD));
-        details.put(USER_RATE_FIELD, completeJson.getString(USER_RATE_FIELD));
-        details.put(RELEASE_DATE_FIELD, completeJson.getString(RELEASE_DATE_FIELD));
-        details.put(ORIGINAL_TITLE_FIELD, completeJson.getString(ORIGINAL_TITLE_FIELD));
-        details.put(OVERVIEW_FIELD, completeJson.getString(OVERVIEW_FIELD));
-
-        return details;
-    }
-
-    public static int getPageCount(String moviesJsonStr)throws JSONException
-    {
-        final String OWM_MESSAGE_CODE = "cod";
-        final String PAGE_COUNT = "total_pages";
-
-        JSONObject completeJson = new JSONObject(moviesJsonStr);
-
-        /* Is there an error? */
-        if (completeJson.has(OWM_MESSAGE_CODE)) {
-            int errorCode = completeJson.getInt(OWM_MESSAGE_CODE);
-
-            switch (errorCode) {
-                case HttpURLConnection.HTTP_OK:
-                    break;
-                case HttpURLConnection.HTTP_NOT_FOUND:
-                    /* Location invalid */
-                    return 0;
-                default:
-                    /* Server probably down */
-                    return 0;
-            }
-        }
-
-        return completeJson.getInt(PAGE_COUNT);
-
-    }
 }

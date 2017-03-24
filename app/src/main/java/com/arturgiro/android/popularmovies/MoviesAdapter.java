@@ -11,17 +11,14 @@ import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.ArrayList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
     private final String POSTER_SIZE = "w342";
 
-    //keep the ids of the movies
-    private int[] mIds;
-    //keep the poster's path of the movies
-    private String[] mPosters;
+    //keep the movies information
+    private ArrayList<Movie> mMovies;
 
     private final MoviesAdapterOnClickHandler mClickHandler;
 
@@ -29,7 +26,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      * The interface that receives onClick messages.
      */
     public interface MoviesAdapterOnClickHandler {
-        void onClick(int movieId);
+        void onClick(Movie movie);
     }
 
     /**
@@ -39,19 +36,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      *                     when an item is clicked.
      */
     public MoviesAdapter(MoviesAdapterOnClickHandler clickHandler) {
+
         mClickHandler = clickHandler;
+        mMovies = new ArrayList<Movie>();
     }
 
     /**
      * Cache of the children views for a movie list item.
      */
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public int mMovieId;
+        public Movie mMovie;
         public final ImageView mPosterImageView;
 
         public MoviesAdapterViewHolder(View view) {
             super(view);
-            mMovieId = -1;
+            mMovie = null;
             mPosterImageView = (ImageView) view.findViewById(R.id.iv_poster);
             view.setOnClickListener(this);
         }
@@ -63,9 +62,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
          */
         @Override
         public void onClick(View v) {
-            //int adapterPosition = getAdapterPosition();
-            //int movieId = mMoviesData[adapterPosition];
-            mClickHandler.onClick(mMovieId);
+            mClickHandler.onClick(mMovie);
         }
     }
 
@@ -81,8 +78,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
-        holder.mMovieId = mIds[position];
-        String posterPath = mPosters[position];
+        holder.mMovie = mMovies.get(position);
+        String posterPath = holder.mMovie.getPosterPath();
+
         Context context = holder.mPosterImageView.getContext();
         URL posterUrl = NetworkUtils.buildPosterUrl(posterPath, POSTER_SIZE);
         Picasso.with(context).load(posterUrl.toString()).into(holder.mPosterImageView);
@@ -90,8 +88,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public int getItemCount() {
-        if (null == mPosters) return 0;
-        return mPosters.length;
+        if (null == mMovies) return 0;
+        return mMovies.size();
     }
 
     /**
@@ -99,45 +97,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      *
      * @param moviesData The new movies to be added to de adapter
      */
-    public void setMoviesData(HashMap<Integer, String> moviesData) {
-
-        int[] idAux = mIds;
-        String[] postersAux = mPosters;
-
-        int newSize = moviesData.size() + (mIds == null ? 0 : mIds.length);
-        mIds = new int[newSize];
-        mPosters = new String[newSize];
-
-        int index = 0;
-        if (idAux != null) {
-            System.arraycopy(idAux, 0, mIds, 0, idAux.length);
-            System.arraycopy(postersAux, 0, mPosters, 0, postersAux.length);
-            index = idAux.length;
-        }
-
-        System.arraycopy(toIntArray(moviesData.keySet()), 0, mIds, index, moviesData.size());
-        System.arraycopy(moviesData.values().toArray(), 0, mPosters, index, moviesData.size());
-
+    public void setMoviesData(ArrayList<Movie> moviesData) {
+        mMovies.addAll(moviesData);
         notifyDataSetChanged();
-    }
-
-    //Converts an Integer set to an int array
-    private int[] toIntArray(Set<Integer> set) {
-        int[] ret = new int[set.size()];
-        int i = 0;
-        for (Integer e : set)
-            ret[i++] = e.intValue();
-        return ret;
     }
 
     public void resetMovieData() {
         // 1. First, clear the array of data
-        mIds = null;
-        mPosters = null;
+        mMovies = null;
 
         // 2. Notify the adapter of the update
-        notifyDataSetChanged(); // or notifyItemRangeRemoved
-
+        notifyDataSetChanged();
     }
 
 }

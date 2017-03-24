@@ -22,7 +22,9 @@ import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
+
+import static com.arturgiro.android.popularmovies.Movie.MOVIE_IDENTIFIER;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -127,14 +129,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
      * clicks.
      *
-     * @param movieId The id for the movie that was clicked
+     * @param movie The movie that was clicked
      */
     @Override
-    public void onClick(int movieId) {
+    public void onClick(Movie movie) {
         Context context = this;
         Class destinationClass = MovieDetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_INDEX, movieId);
+        intentToStartDetailActivity.putExtra(MOVIE_IDENTIFIER, movie);
         startActivity(intentToStartDetailActivity);
     }
 
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, HashMap<Integer, String>> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
 
         @Override
-        protected HashMap<Integer, String> doInBackground(String... params) {
+        protected ArrayList<Movie> doInBackground(String... params) {
 
             /* If there's no sort criteria, there's nothing to look up. */
             if (params.length == 0) {
@@ -169,23 +171,23 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
             String sortMethod = params[0];
             int pageNumber = Integer.parseInt(params[1]);
-
-            HashMap<Integer, String> jsonMoviesData;
             URL moviesRequestUrl = NetworkUtils.buildUrl(sortMethod, pageNumber);
+
+            ArrayList<Movie> movies;
 
             try {
                 String jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
-                jsonMoviesData = TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse);
+                movies = TMDBJsonUtils.getMoviesFromJson(jsonMoviesResponse);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
 
-            return jsonMoviesData;
+            return movies;
         }
 
         @Override
-        protected void onPostExecute(HashMap<Integer, String> movieData) {
+        protected void onPostExecute(ArrayList<Movie> movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMoviesDataView();
