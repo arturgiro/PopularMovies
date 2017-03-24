@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,13 +20,17 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.arturgiro.android.popularmovies.R;
+import com.arturgiro.android.popularmovies.models.Movie;
 import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
+import com.arturgiro.android.popularmovies.views.EndlessRecyclerViewScrollListener;
+import com.arturgiro.android.popularmovies.views.adapters.MoviesAdapter;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-import static com.arturgiro.android.popularmovies.Movie.MOVIE_IDENTIFIER;
+import static com.arturgiro.android.popularmovies.models.Movie.MOVIE_IDENTIFIER;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private RecyclerView mRecyclerView;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    private CoordinatorLayout coordinatorLayout;
 
     private MoviesAdapter mMoviestAdapter;
 
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);//TODO VErificar esse número
         mRecyclerView.setLayoutManager(layoutManager);
@@ -81,14 +90,27 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
      * This method will get the user's preferred sort criteria, and then tell some
      * background method to get the movies data in the background.
      */
-    private void loadMoviesData(int page) {
+    private void loadMoviesData(final int page) {
 
         showMoviesDataView();
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortMethod = sharedPref.getString(getString(R.string.pref_order_key) , "");
+        if(NetworkUtils.isNetworkConnected(this)) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String sortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
+            new FetchMoviesTask().execute(sortMethod, String.valueOf(page));
+        }
+        else {
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_INDEFINITE);
 
-        new FetchMoviesTask().execute(sortMethod, String.valueOf(page));
+            snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
+                //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
+                @Override
+                public void onClick(View view) {
+                    loadMoviesData(page);
+                }
+            });
+            snackbar.show();
+        }
     }
 
     private void showMoviesDataView() {

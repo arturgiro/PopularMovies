@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.views;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

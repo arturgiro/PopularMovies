@@ -1,6 +1,6 @@
 package com.arturgiro.android.popularmovies.utilities;
 
-import com.arturgiro.android.popularmovies.Movie;
+import com.arturgiro.android.popularmovies.models.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,12 +62,12 @@ public class TMDBJsonUtils {
             /* Get the JSON object representing the infos about one movie */
             JSONObject movieInfo = resultsArray.getJSONObject(i);
 
-            int movieId = movieInfo.getInt(MOVIE_ID_FIELD);
-            String originalTitle = movieInfo.getString(ORIGINAL_TITLE_FIELD);
-            String posterPath = movieInfo.getString(POSTER_PATH_FIELD);
-            String overview = movieInfo.getString(OVERVIEW_FIELD);
-            String rating = movieInfo.getString(RATING_FIELD);
-            String releaseDate = movieInfo.getString(RELEASE_DATE_FIELD);
+            int movieId = movieInfo.optInt(MOVIE_ID_FIELD);
+            String originalTitle = movieInfo.optString(ORIGINAL_TITLE_FIELD);
+            String posterPath = movieInfo.optString(POSTER_PATH_FIELD);
+            String overview = movieInfo.optString(OVERVIEW_FIELD);
+            String rating = movieInfo.optString(RATING_FIELD);
+            String releaseDate = movieInfo.optString(RELEASE_DATE_FIELD);
 
             Movie movie = new Movie(movieId, originalTitle, posterPath, overview, rating, releaseDate);
 

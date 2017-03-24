@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.R;
 import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
-import static com.arturgiro.android.popularmovies.Movie.MOVIE_IDENTIFIER;
+import static com.arturgiro.android.popularmovies.models.Movie.MOVIE_IDENTIFIER;
 
 public class MovieDetailActivity extends AppCompatActivity {
 

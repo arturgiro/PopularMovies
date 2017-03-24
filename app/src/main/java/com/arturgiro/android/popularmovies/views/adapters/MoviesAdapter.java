@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.views.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.R;
 import com.arturgiro.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 

@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.models;
 
 
 import java.io.Serializable;

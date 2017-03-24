@@ -83,4 +83,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="detail_error_message">Could not load the movie details...</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="retry">Retry ?</string>
 </resources>

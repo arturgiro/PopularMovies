@@ -1,9 +1,10 @@
-package com.arturgiro.android.popularmovies;
+package com.arturgiro.android.popularmovies.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
+
+import com.arturgiro.android.popularmovies.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
