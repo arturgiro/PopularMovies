@@ -42,7 +42,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(MOVIE_IDENTIFIER)) {
-                mMovie = (Movie)intentThatStartedThisActivity.getSerializableExtra(MOVIE_IDENTIFIER);
+                mMovie = (Movie)intentThatStartedThisActivity.getParcelableExtra(MOVIE_IDENTIFIER);
                 showMovie();
             }
         }
