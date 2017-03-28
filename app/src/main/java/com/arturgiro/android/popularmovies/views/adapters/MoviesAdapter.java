@@ -106,7 +106,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     public void resetMovieData() {
         // 1. First, clear the array of data
-        mMovies = null;
+        mMovies.clear();
 
         // 2. Notify the adapter of the update
         notifyDataSetChanged();
