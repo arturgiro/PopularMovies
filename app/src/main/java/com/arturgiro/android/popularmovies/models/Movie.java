@@ -4,8 +4,6 @@ package com.arturgiro.android.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class Movie implements Parcelable {
 
     public static final String MOVIE_IDENTIFIER = "MOVIE";
@@ -88,6 +86,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(originalTitle);
         dest.writeString(posterPath);
         dest.writeString(overview);
@@ -96,6 +95,7 @@ public class Movie implements Parcelable {
     }
 
     private Movie(Parcel in) {
+        id = in.readInt();
         originalTitle = in.readString();
         posterPath  = in.readString();
         overview = in.readString();

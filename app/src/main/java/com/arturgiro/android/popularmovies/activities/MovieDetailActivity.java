@@ -66,17 +66,18 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieRevie
         mReviewAdapter = new MovieReviewAdapter(this);
         mMovieReviews.setAdapter(mReviewAdapter);
 
-        Bundle queryBundle = new Bundle();
-        queryBundle.putInt(MOVIE_ID_EXTRA, mMovie.getId());
-
-        getSupportLoaderManager().initLoader(REVIEW_LOADER, queryBundle, this);
-
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(MOVIE_IDENTIFIER)) {
                 mMovie = (Movie)intentThatStartedThisActivity.getParcelableExtra(MOVIE_IDENTIFIER);
                 showMovie();
+
+                Bundle queryBundle = new Bundle();
+                queryBundle.putInt(MOVIE_ID_EXTRA, mMovie.getId());
+
+                getSupportLoaderManager().initLoader(REVIEW_LOADER, queryBundle, this);
+
             }
         }
     }
@@ -120,6 +121,11 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieRevie
     @Override
     public Loader<ArrayList<Review>> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<ArrayList<Review>>(this) {
+
+            @Override
+            protected void onStartLoading() {
+                forceLoad();
+            }
 
             @Override
             public ArrayList<Review> loadInBackground() {
