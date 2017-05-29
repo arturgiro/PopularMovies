@@ -22,6 +22,8 @@ public final class NetworkUtils {
 
     static final String MOVIES_BASE_URL = "http://api.themoviedb.org";
     static final String POSTERS_BASE_URL = "http://image.tmdb.org/t/p";
+    static final String VIDEO_IMAGE_BASE_URL = "http://img.youtube.com/vi";
+
 
     final static String PATH1_PARAM = "3";
     final static String PATH_MOVIE = "movie";
@@ -29,6 +31,7 @@ public final class NetworkUtils {
     final static String PAGE_PARAM = "page";
     final static String PATH_VIDEOS = "videos";
     final static String PATH_REVIEWS = "reviews";
+    final static String PATH_IMAGE = "1.jpg";
 
 
     /**
@@ -159,6 +162,28 @@ public final class NetworkUtils {
                 .appendEncodedPath(String.valueOf(movieId))
                 .appendPath(PATH_REVIEWS)
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the image from a youtube video.
+     *
+     * @param movieKey key for the video on Youtube.
+     * @return The URL to use to query the video image .
+     */
+    public static URL buildVideoImageUrl(String movieKey) {
+        Uri builtUri = Uri.parse(VIDEO_IMAGE_BASE_URL).buildUpon()
+                .appendPath(movieKey)
+                .appendPath(PATH_IMAGE)
                 .build();
 
         URL url = null;
