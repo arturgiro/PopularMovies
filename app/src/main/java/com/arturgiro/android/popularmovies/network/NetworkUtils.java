@@ -27,6 +27,9 @@ public final class NetworkUtils {
     final static String PATH_MOVIE = "movie";
     final static String API_KEY_PARAM = "api_key";
     final static String PAGE_PARAM = "page";
+    final static String PATH_VIDEOS = "videos";
+    final static String PATH_REVIEWS = "reviews";
+
 
     /**
      * Builds the URL used to talk to the movie server.
@@ -105,6 +108,56 @@ public final class NetworkUtils {
                 .appendPath(PATH1_PARAM)
                 .appendPath(PATH_MOVIE)
                 .appendEncodedPath(String.valueOf(movieId))
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the movie videos.
+     *
+     * @param movieId Id of the movie we want to retrive the videos.
+     * @return The URL to use to query the movie.
+     */
+    public static URL buildMovieVideosUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(PATH1_PARAM)
+                .appendPath(PATH_MOVIE)
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendPath(PATH_VIDEOS)
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the movie reviews.
+     *
+     * @param movieId Id of the movie we want to retrive the reviews.
+     * @return The URL to use to query the movie.
+     */
+    public static URL buildMovieReviewsUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(PATH1_PARAM)
+                .appendPath(PATH_MOVIE)
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendPath(PATH_REVIEWS)
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                 .build();
 

@@ -1,6 +1,7 @@
 package com.arturgiro.android.popularmovies.utilities;
 
 import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.models.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class TMDBJsonUtils {
 
-    //field names in XML
+    //field names in movie XML
     static final String MOVIE_ID_FIELD = "id";
     static final String ORIGINAL_TITLE_FIELD = "original_title";
     static final String POSTER_PATH_FIELD = "poster_path";
@@ -19,6 +20,11 @@ public class TMDBJsonUtils {
     static final String RATING_FIELD = "vote_average";
     static final String RELEASE_DATE_FIELD = "release_date";
 
+    //field names in review XML
+    static final String REVIEW_ID_FIELD = "id";
+    static final String AUTHOR_FIELD = "author";
+    static final String CONTENT_FIELD = "content";
+    static final String URL_FIELD = "url";
 
     /**
      * This method parses JSON from a web response and returns an array of Strings
@@ -77,4 +83,48 @@ public class TMDBJsonUtils {
         return movies;
     }
 
+    public static ArrayList<Review> getReviewsFromJson(String moviesJsonStr)throws JSONException
+    {
+        final String OWM_MESSAGE_CODE = "cod";
+        final String RESULTS_SECTION = "results";
+
+        JSONObject completeJson = new JSONObject(moviesJsonStr);
+
+        /* Is there an error? */
+        if (completeJson.has(OWM_MESSAGE_CODE)) {
+            int errorCode = completeJson.getInt(OWM_MESSAGE_CODE);
+
+            switch (errorCode) {
+                case HttpURLConnection.HTTP_OK:
+                    break;
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    /* Location invalid */
+                    return null;
+                default:
+                    /* Server probably down */
+                    return null;
+            }
+        }
+
+        ArrayList<Review> reviews = new ArrayList<Review>();
+
+        //results has the info about the movies
+        JSONArray resultsArray = completeJson.getJSONArray(RESULTS_SECTION);
+        for (int i = 0; i < resultsArray.length(); i++) {
+
+            /* Get the JSON object representing the infos about one movie */
+            JSONObject reviewInfo = resultsArray.getJSONObject(i);
+
+            int reviewId = reviewInfo.optInt(REVIEW_ID_FIELD);
+            String author = reviewInfo.optString(AUTHOR_FIELD);
+            String content = reviewInfo.optString(CONTENT_FIELD);
+            String url = reviewInfo.optString(URL_FIELD);
+
+            Review review = new Review(reviewId, author, content, url);
+
+            reviews.add(review);
+        }
+
+        return reviews;
+    }
 }
