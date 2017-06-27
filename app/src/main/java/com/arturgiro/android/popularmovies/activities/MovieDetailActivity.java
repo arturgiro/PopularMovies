@@ -11,10 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.models.Review;
-import com.arturgiro.android.popularmovies.models.Video;
+import com.arturgiro.android.popularmovies.data.Review;
+import com.arturgiro.android.popularmovies.data.Video;
 import com.arturgiro.android.popularmovies.network.NetworkUtils;
 import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 import com.arturgiro.android.popularmovies.views.adapters.MovieReviewAdapter;
@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static com.arturgiro.android.popularmovies.models.Movie.MOVIE_IDENTIFIER;
+import static com.arturgiro.android.popularmovies.data.Movie.MOVIE_IDENTIFIER;
 
 public class MovieDetailActivity extends AppCompatActivity implements MovieReviewAdapter.MoviesReviewOnClickHandler {
 

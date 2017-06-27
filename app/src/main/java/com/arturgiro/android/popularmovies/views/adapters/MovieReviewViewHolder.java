@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.models.Review;
+import com.arturgiro.android.popularmovies.data.Review;
 
 
 public class MovieReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

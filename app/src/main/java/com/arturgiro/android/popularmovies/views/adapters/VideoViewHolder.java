@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.models.Video;
+import com.arturgiro.android.popularmovies.data.Video;
 
 public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     public Video mVideo;

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.models.Review;
+import com.arturgiro.android.popularmovies.data.Review;
 
 import java.util.ArrayList;
 

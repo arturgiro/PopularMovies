@@ -1,8 +1,8 @@
 package com.arturgiro.android.popularmovies.utilities;
 
-import com.arturgiro.android.popularmovies.models.Movie;
-import com.arturgiro.android.popularmovies.models.Review;
-import com.arturgiro.android.popularmovies.models.Video;
+import com.arturgiro.android.popularmovies.data.Movie;
+import com.arturgiro.android.popularmovies.data.Review;
+import com.arturgiro.android.popularmovies.data.Video;
 
 import org.json.JSONArray;
 import org.json.JSONException;

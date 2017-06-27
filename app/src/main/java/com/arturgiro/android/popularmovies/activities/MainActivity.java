@@ -20,7 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
-import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.network.AsyncTaskDelegate;
 import com.arturgiro.android.popularmovies.network.FetchMoviesTask;
 import com.arturgiro.android.popularmovies.network.NetworkUtils;
@@ -29,7 +29,7 @@ import com.arturgiro.android.popularmovies.views.adapters.MoviesAdapter;
 
 import java.util.ArrayList;
 
-import static com.arturgiro.android.popularmovies.models.Movie.MOVIE_IDENTIFIER;
+import static com.arturgiro.android.popularmovies.data.Movie.MOVIE_IDENTIFIER;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler, SharedPreferences.OnSharedPreferenceChangeListener, AsyncTaskDelegate{
 
@@ -212,4 +212,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             outRect.set(mItemOffset, mItemOffset, mItemOffset, mItemOffset);
         }
     }
+//TODO Adicionar floating button
+//TODO Salvar favoritos
+//TODO Mostrar favoritos
+//TODO Adaptar layout para tablet
+//TODO Permitir assistir os videos
 }
+

@@ -1,4 +1,4 @@
-package com.arturgiro.android.popularmovies.models;
+package com.arturgiro.android.popularmovies.data;
 
 
 import android.os.Parcel;
