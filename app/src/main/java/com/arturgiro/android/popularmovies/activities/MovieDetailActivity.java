@@ -168,7 +168,7 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieRevie
         mMovieReviews.setAdapter(mReviewAdapter);
 
         mMovieVideos = (RecyclerView) findViewById(R.id.movie_videos);
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mMovieVideos.setLayoutManager(layoutManager2);
         mVideoAdapter = new VideoAdapter(null);//TODO - tratar click no video
         mMovieVideos.setAdapter(mVideoAdapter);

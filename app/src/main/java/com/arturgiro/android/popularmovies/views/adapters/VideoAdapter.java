@@ -60,7 +60,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoViewHolder>{
         Context context = holder.mVideoImageView.getContext();
         URL imageUrl = NetworkUtils.buildVideoImageUrl(videoKey);
         Picasso.with(context).load(imageUrl.toString()).into(holder.mVideoImageView);
-        holder.mTxtVideoName.setText(holder.mVideo.getName());
     }
 
     @Override
