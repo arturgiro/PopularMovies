@@ -3,6 +3,7 @@ package com.arturgiro.android.popularmovies.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
 import com.arturgiro.android.popularmovies.data.Movie;
+import com.arturgiro.android.popularmovies.data.MoviesContract;
 import com.arturgiro.android.popularmovies.network.AsyncTaskDelegate;
 import com.arturgiro.android.popularmovies.network.FetchMoviesTask;
 import com.arturgiro.android.popularmovies.network.NetworkUtils;
@@ -170,8 +172,33 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             // reset endless scroll listener when performing a new search
             mScrollListener.resetState();
 
-            loadMoviesData(1);
+            String sortMethod = sharedPreferences.getString(getString(R.string.pref_order_key), "");
+            if(sortMethod == getString(R.string.pref_sort_label_favorite))
+                refreshMovies(getFavorites());
+            else
+                loadMoviesData(1);
+
         }
+    }
+
+    private ArrayList<Movie> getFavorites() {
+        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null);
+        ArrayList<Movie> ret = new ArrayList<Movie>();
+        try {
+            while (cursor.moveToNext()) {
+                Movie m = new Movie(cursor.getInt(cursor.getColumnIndex(MoviesContract.MovieEntry._ID)),
+                                    cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TITLE)),
+                                    cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_POSTER_PATH)),
+                                    cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_OVERVIEW)),
+                                    cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_USER_RATING)),
+                                    cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE))
+                                    );
+                ret.add(m);
+            }
+        } finally {
+            cursor.close();
+        }
+        return ret;
     }
 
     @Override
@@ -184,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         ArrayList<Movie> movieData = (ArrayList<Movie>)output;
+        refreshMovies(movieData);
+    }
+
+    private void refreshMovies(ArrayList<Movie> movieData) {
 
         if (movieData != null) {
             showMoviesDataView();
@@ -191,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         } else {
             showErrorMessage();
         }
+
     }
 
     public class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
@@ -212,10 +244,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             outRect.set(mItemOffset, mItemOffset, mItemOffset, mItemOffset);
         }
     }
-//TODO Adicionar floating button
-//TODO Salvar favoritos
+//TODO posicionar floating button
+//TODO geranciar favoritos
 //TODO Mostrar favoritos
 //TODO Adaptar layout para tablet
-//TODO Permitir assistir os videos
 }
 

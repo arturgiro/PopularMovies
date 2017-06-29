@@ -1,6 +1,7 @@
 package com.arturgiro.android.popularmovies.data;
 
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -113,4 +114,15 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(MoviesContract.MovieEntry._ID, id);
+        values.put(MoviesContract.MovieEntry.COLUMN_TITLE, originalTitle);
+        values.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, overview);
+        values.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+        values.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, posterPath);
+        values.put(MoviesContract.MovieEntry.COLUMN_USER_RATING, rating);
+        return values;
+    }
 }

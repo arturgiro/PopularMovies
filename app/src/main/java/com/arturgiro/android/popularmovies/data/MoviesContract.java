@@ -13,7 +13,6 @@ public class MoviesContract {
 
         public static final String TABLE_NAME = "tb_movies";
 
-        public static final String COLUMN_MOVIE_ID = "move_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_POSTER_PATH = "poster_path";
         public static final String COLUMN_OVERVIEW = "overview";
@@ -24,8 +23,7 @@ public class MoviesContract {
 
         public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        COLUMN_MOVIE_ID + " INTEGER, " +
+                        _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_TITLE + " TEXT, " +
                         COLUMN_OVERVIEW + " TEXT, " +
                         COLUMN_RELEASE_DATE + " TEXT, " +
