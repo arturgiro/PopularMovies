@@ -49,7 +49,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoViewHolder>{
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
-        return new VideoViewHolder(view);
+        return new VideoViewHolder(view, mClickHandler);
     }
 
     @Override

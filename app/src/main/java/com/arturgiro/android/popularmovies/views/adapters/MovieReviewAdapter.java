@@ -14,13 +14,10 @@ import java.util.ArrayList;
 
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewViewHolder>{
 
-    private final MoviesReviewOnClickHandler mClickHandler;
-
     private ArrayList<Review> mReviews;
 
-    public MovieReviewAdapter(MoviesReviewOnClickHandler clickHandler) {
+    public MovieReviewAdapter() {
         this.mReviews = new ArrayList<Review>();
-        mClickHandler = clickHandler;
     }
 
     @Override
@@ -30,7 +27,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
-        return new MovieReviewViewHolder(view, mClickHandler);
+        return new MovieReviewViewHolder(view);
     }
 
     @Override

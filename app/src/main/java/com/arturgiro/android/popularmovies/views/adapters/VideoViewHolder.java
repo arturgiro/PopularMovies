@@ -11,10 +11,13 @@ public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public Video mVideo;
     public final ImageView mVideoImageView;
 
-    public VideoViewHolder(View view) {
+    private VideoAdapter.VideoAdapterOnClickHandler mClickHandler;
+
+    public VideoViewHolder(View view, VideoAdapter.VideoAdapterOnClickHandler clickHandler) {
         super(view);
         mVideo = null;
         mVideoImageView = (ImageView) view.findViewById(R.id.iv_video_thumbnail);
+        mClickHandler = clickHandler;
         view.setOnClickListener(this);
     }
 
@@ -25,6 +28,7 @@ public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnC
      */
     @Override
     public void onClick(View v) {
-        //mClickHandler.onClick(mMovie);
+        if (mClickHandler != null)
+            mClickHandler.onClick(mVideo);
     }
 }

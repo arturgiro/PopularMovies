@@ -1,6 +1,7 @@
 package com.arturgiro.android.popularmovies.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -11,8 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.R;
+import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.data.Review;
 import com.arturgiro.android.popularmovies.data.Video;
 import com.arturgiro.android.popularmovies.network.NetworkUtils;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 
 import static com.arturgiro.android.popularmovies.data.Movie.MOVIE_IDENTIFIER;
 
-public class MovieDetailActivity extends AppCompatActivity implements MovieReviewAdapter.MoviesReviewOnClickHandler {
+public class MovieDetailActivity extends AppCompatActivity implements VideoAdapter.VideoAdapterOnClickHandler {
 
     private final String DETAIL_POSTER_SIZE = "w500";
     private static final int REVIEW_LOADER = 101;
@@ -164,13 +165,13 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieRevie
         mMovieReviews = (RecyclerView) findViewById(R.id.movie_reviews);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mMovieReviews.setLayoutManager(layoutManager);
-        mReviewAdapter = new MovieReviewAdapter(this);
+        mReviewAdapter = new MovieReviewAdapter();
         mMovieReviews.setAdapter(mReviewAdapter);
 
         mMovieVideos = (RecyclerView) findViewById(R.id.movie_videos);
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mMovieVideos.setLayoutManager(layoutManager2);
-        mVideoAdapter = new VideoAdapter(null);//TODO - tratar click no video
+        mVideoAdapter = new VideoAdapter(this);
         mMovieVideos.setAdapter(mVideoAdapter);
 
 
@@ -221,9 +222,12 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieRevie
         }
     }
 
-
     @Override
-    public void onClick(Review review) {
-
+    public void onClick(Video video) {
+        if (video != null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + video.getKey()));
+            startActivity(intent);
+        }
     }
 }
