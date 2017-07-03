@@ -95,23 +95,28 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         showMoviesDataView();
 
-        if(NetworkUtils.isNetworkConnected(this)) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            String sortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
-            new FetchMoviesTask(this).execute(sortMethod, String.valueOf(page));
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
+        if(sortMethod.compareTo(getString(R.string.pref_sort_label_favorite)) == 0){
+            if(page == 1)//não usa paginação para os filmes salvos no banco
+                refreshMovies(getFavorites());
         }
-        else {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_INDEFINITE);
+        else
+            if(NetworkUtils.isNetworkConnected(this)) {
+                new FetchMoviesTask(this).execute(sortMethod, String.valueOf(page));
+            }
+            else {
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_INDEFINITE);
 
-            snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
-                //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
-                @Override
-                public void onClick(View view) {
-                    loadMoviesData(page);
-                }
-            });
-            snackbar.show();
-        }
+                snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
+                    //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
+                    @Override
+                    public void onClick(View view) {
+                        loadMoviesData(page);
+                    }
+                });
+                snackbar.show();
+            }
     }
 
     private void showMoviesDataView() {
@@ -172,11 +177,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             // reset endless scroll listener when performing a new search
             mScrollListener.resetState();
 
-            String sortMethod = sharedPreferences.getString(getString(R.string.pref_order_key), "");
-            if(sortMethod == getString(R.string.pref_sort_label_favorite))
-                refreshMovies(getFavorites());
-            else
-                loadMoviesData(1);
+            loadMoviesData(1);
 
         }
     }
@@ -246,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 //TODO posicionar floating button
 //TODO geranciar favoritos
-//TODO Mostrar favoritos
 //TODO Adaptar layout para tablet
 }
 

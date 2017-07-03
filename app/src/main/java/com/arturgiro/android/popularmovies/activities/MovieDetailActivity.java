@@ -190,6 +190,8 @@ public class MovieDetailActivity extends AppCompatActivity implements VideoAdapt
             }
         });
 
+        //TODO Alternar conforme a situação do filme
+        mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
 
         Intent intentThatStartedThisActivity = getIntent();
 
