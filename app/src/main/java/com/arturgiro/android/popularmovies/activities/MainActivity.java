@@ -245,8 +245,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             outRect.set(mItemOffset, mItemOffset, mItemOffset, mItemOffset);
         }
     }
-//TODO posicionar floating button
-//TODO geranciar favoritos
 //TODO Adaptar layout para tablet
 }
 

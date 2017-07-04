@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
+import com.arturgiro.android.popularmovies.data.FavoritesService;
 import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.data.MoviesContract;
 import com.arturgiro.android.popularmovies.data.Review;
@@ -190,9 +192,6 @@ public class MovieDetailActivity extends AppCompatActivity implements VideoAdapt
             }
         });
 
-        //TODO Alternar conforme a situação do filme
-        mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
-
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
@@ -206,13 +205,29 @@ public class MovieDetailActivity extends AppCompatActivity implements VideoAdapt
                 getSupportLoaderManager().initLoader(REVIEW_LOADER, movieBundle, reviewLoaderListener);
                 getSupportLoaderManager().initLoader(VIDEO_LOADER, movieBundle, videoLoaderListener);
 
+                FavoritesService favoritesService = new FavoritesService(this);
+                if (favoritesService.isFavorite(mMovie))
+                    mFab.setImageResource(R.drawable.ic_star_black_24dp);
+                else
+                    mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
+
             }
         }
     }
 
     private void onFabClick() {
 
-        getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI, mMovie.toContentValues());
+        FavoritesService favoritesService = new FavoritesService(this);
+
+        if (favoritesService.isFavorite(mMovie)) {
+            favoritesService.removeFromFavorites(mMovie);
+            Snackbar.make(mRelativeLayout, "Removed from favorites", Snackbar.LENGTH_LONG).show();
+            mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
+        } else {
+            favoritesService.addToFavorites(mMovie);
+            Snackbar.make(mRelativeLayout, "added to favorites", Snackbar.LENGTH_LONG).show();
+            mFab.setImageResource(R.drawable.ic_star_black_24dp);
+        }
     }
 
     private void showMovie() {
