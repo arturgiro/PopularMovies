@@ -88,4 +88,7 @@
     <string name="no_internet_connection">No internet connection.</string>
     <string name="retry">Retry ?</string>
     <string name="review_title">Reviews</string>
+
+    <string name="add_favorite">Added to favorites</string>
+    <string name="remove_favorite">Removed from favorites</string>
 </resources>

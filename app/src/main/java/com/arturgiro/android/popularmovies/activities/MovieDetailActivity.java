@@ -221,11 +221,11 @@ public class MovieDetailActivity extends AppCompatActivity implements VideoAdapt
 
         if (favoritesService.isFavorite(mMovie)) {
             favoritesService.removeFromFavorites(mMovie);
-            Snackbar.make(mRelativeLayout, "Removed from favorites", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mRelativeLayout, R.string.remove_favorite, Snackbar.LENGTH_LONG).show();
             mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
         } else {
             favoritesService.addToFavorites(mMovie);
-            Snackbar.make(mRelativeLayout, "added to favorites", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mRelativeLayout, R.string.add_favorite, Snackbar.LENGTH_LONG).show();
             mFab.setImageResource(R.drawable.ic_star_black_24dp);
         }
     }
