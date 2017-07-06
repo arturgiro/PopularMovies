@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MovieDetailActivity"
+            android:name=".activities.DetailActivity"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,6 +32,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.arturgiro.android.popularmovies"
+            android:name=".data.MovieContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

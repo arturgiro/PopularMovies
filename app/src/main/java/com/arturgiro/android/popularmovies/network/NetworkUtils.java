@@ -22,11 +22,17 @@ public final class NetworkUtils {
 
     static final String MOVIES_BASE_URL = "http://api.themoviedb.org";
     static final String POSTERS_BASE_URL = "http://image.tmdb.org/t/p";
+    static final String VIDEO_IMAGE_BASE_URL = "http://img.youtube.com/vi";
+
 
     final static String PATH1_PARAM = "3";
     final static String PATH_MOVIE = "movie";
     final static String API_KEY_PARAM = "api_key";
     final static String PAGE_PARAM = "page";
+    final static String PATH_VIDEOS = "videos";
+    final static String PATH_REVIEWS = "reviews";
+    final static String PATH_IMAGE = "1.jpg";
+
 
     /**
      * Builds the URL used to talk to the movie server.
@@ -106,6 +112,78 @@ public final class NetworkUtils {
                 .appendPath(PATH_MOVIE)
                 .appendEncodedPath(String.valueOf(movieId))
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the movie videos.
+     *
+     * @param movieId Id of the movie we want to retrive the videos.
+     * @return The URL to use to query the movie.
+     */
+    public static URL buildMovieVideosUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(PATH1_PARAM)
+                .appendPath(PATH_MOVIE)
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendPath(PATH_VIDEOS)
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the movie reviews.
+     *
+     * @param movieId Id of the movie we want to retrive the reviews.
+     * @return The URL to use to query the movie.
+     */
+    public static URL buildMovieReviewsUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(PATH1_PARAM)
+                .appendPath(PATH_MOVIE)
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendPath(PATH_REVIEWS)
+                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to retrive the image from a youtube video.
+     *
+     * @param movieKey key for the video on Youtube.
+     * @return The URL to use to query the video image .
+     */
+    public static URL buildVideoImageUrl(String movieKey) {
+        Uri builtUri = Uri.parse(VIDEO_IMAGE_BASE_URL).buildUpon()
+                .appendPath(movieKey)
+                .appendPath(PATH_IMAGE)
                 .build();
 
         URL url = null;

@@ -2,7 +2,7 @@ package com.arturgiro.android.popularmovies.network;
 
 import android.os.AsyncTask;
 
-import com.arturgiro.android.popularmovies.models.Movie;
+import com.arturgiro.android.popularmovies.data.Movie;
 import com.arturgiro.android.popularmovies.utilities.TMDBJsonUtils;
 
 import java.net.URL;

@@ -1,10 +1,9 @@
-package com.arturgiro.android.popularmovies.models;
+package com.arturgiro.android.popularmovies.data;
 
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 public class Movie implements Parcelable {
 
@@ -88,6 +87,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(originalTitle);
         dest.writeString(posterPath);
         dest.writeString(overview);
@@ -96,6 +96,7 @@ public class Movie implements Parcelable {
     }
 
     private Movie(Parcel in) {
+        id = in.readInt();
         originalTitle = in.readString();
         posterPath  = in.readString();
         overview = in.readString();
@@ -113,4 +114,15 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(MoviesContract.MovieEntry._ID, id);
+        values.put(MoviesContract.MovieEntry.COLUMN_TITLE, originalTitle);
+        values.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, overview);
+        values.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+        values.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, posterPath);
+        values.put(MoviesContract.MovieEntry.COLUMN_USER_RATING, rating);
+        return values;
+    }
 }
