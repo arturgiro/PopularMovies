@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -66,6 +67,9 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
     private TextView mTvOriginalTitle;
     private TextView mTvOverview;
     private TextView mTvEmpty;
+    private ProgressBar mLoadingVideoIndicator;
+    private ProgressBar mLoadingReviewIndicator;
+
 
     public DetailFragment() {
 
@@ -107,6 +111,8 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
         mTvOriginalTitle = (TextView) rootView.findViewById(R.id.tv_detail_original_title);
         mTvOverview = (TextView) rootView.findViewById(R.id.tv_detail_overview);
         mTvEmpty = (TextView) rootView.findViewById(R.id.tv_empty_message_display);
+        mLoadingVideoIndicator = (ProgressBar) rootView.findViewById(R.id.pb_loading_videos);
+        mLoadingReviewIndicator = (ProgressBar) rootView.findViewById(R.id.pb_loading_reviews);
 
         mRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.relative_layout_detail);
         mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -161,24 +167,24 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
 
     @Override
     public void loadReviewStart() {
-       // mLoadingReviewIndicator.setVisibility(View.VISIBLE);
+        mLoadingReviewIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void loadReviewFinish(Object output) {
-        //mLoadingReviewIndicator.setVisibility(View.INVISIBLE);
+        mLoadingReviewIndicator.setVisibility(View.INVISIBLE);
         ArrayList<Review> reviews = (ArrayList<Review>)output;
         mReviewAdapter.setReviewsData(reviews);
     }
 
     @Override
     public void loadVideoStart() {
-        //mLoadingVideoIndicator.setVisibility(View.VISIBLE);
+        mLoadingVideoIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void loadVideoFinish(Object output) {
-       // mLoadingVideoIndicator.setVisibility(View.INVISIBLE);
+        mLoadingVideoIndicator.setVisibility(View.INVISIBLE);
         ArrayList<Video> videos = (ArrayList<Video>)output;
         mVideoAdapter.setVideosData(videos);
     }
