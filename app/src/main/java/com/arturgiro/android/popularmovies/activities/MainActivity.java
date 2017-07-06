@@ -83,8 +83,5 @@ public class MainActivity extends AppCompatActivity implements GridFragment.OnGr
         }
     }
 
-
-// TODO recreating activities using onSaveInstanceState.  If your app crashes when the screen is rotated, you will not pass the project.
-
 }
 

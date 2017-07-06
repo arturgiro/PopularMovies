@@ -112,8 +112,6 @@ public class GridFragment extends Fragment implements MoviesAdapter.MoviesAdapte
         // Adds the scroll listener to RecyclerView
         mRecyclerView.addOnScrollListener(mScrollListener);
 
-        //loadMoviesData(1);
-
         return rootView;
     }
 
