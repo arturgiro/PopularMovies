@@ -1,9 +1,11 @@
 package com.arturgiro.android.popularmovies.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,18 +38,10 @@ import java.util.ArrayList;
  * Use the {@link GridFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GridFragment extends Fragment implements MoviesAdapter.MoviesAdapterOnClickHandler, AsyncTaskDelegate {
+public class GridFragment extends Fragment implements MoviesAdapter.MoviesAdapterOnClickHandler, AsyncTaskDelegate, SharedPreferences.OnSharedPreferenceChangeListener {
 
     // the fragment initialization parameters
     public static final String ARG_SORT_METHOD = "sort";
-
-    public String getSortMethod() {
-        return mSortMethod;
-    }
-
-    public void setSortMethod(String mSortMethod) {
-        this.mSortMethod = mSortMethod;
-    }
 
     private String mSortMethod;
 
@@ -268,7 +262,31 @@ public class GridFragment extends Fragment implements MoviesAdapter.MoviesAdapte
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        PreferenceManager.setDefaultValues(getContext(), R.xml.preferences, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
+        mSortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
+
         loadMoviesData(1);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if(isAdded()) {
+            if (key.equals(getString(R.string.pref_order_key))) {
+                // clear the array of data
+                mMoviestAdapter.resetMovieData();
+                // reset endless scroll listener when performing a new search
+                mScrollListener.resetState();
+
+                mSortMethod = sharedPreferences.getString(getString(R.string.pref_order_key), "");
+
+                loadMoviesData(1);
+
+            }
+        }
     }
 }

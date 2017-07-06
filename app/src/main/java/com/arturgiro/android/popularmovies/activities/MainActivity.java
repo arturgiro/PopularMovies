@@ -1,9 +1,7 @@
 package com.arturgiro.android.popularmovies.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +11,7 @@ import com.arturgiro.android.popularmovies.data.Movie;
 
 import static com.arturgiro.android.popularmovies.data.Movie.MOVIE_IDENTIFIER;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, GridFragment.OnGridFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements GridFragment.OnGridFragmentInteractionListener {
 
     private boolean mTwoPane;
 
@@ -24,11 +22,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPref.registerOnSharedPreferenceChangeListener(this);
-        String sortMethod = sharedPref.getString(getString(R.string.pref_order_key), "");
 
         if (findViewById(R.id.detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
@@ -46,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } else {
             mTwoPane = false;
         }
-
-        GridFragment fragment =  ((GridFragment)getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_grid));
-        fragment.setSortMethod(sortMethod);
     }
 
     @Override
@@ -70,20 +59,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-//        if (key.equals(getString(R.string.pref_order_key))) {
-//            // clear the array of data
-//            mMoviestAdapter.resetMovieData();
-//            // reset endless scroll listener when performing a new search
-//            mScrollListener.resetState();
-//
-//            loadMoviesData(1);
-//
-//        }
     }
 
     //callback method from the grid fragment
@@ -110,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-//TODO Adaptar layout para tablet
+
 // TODO recreating activities using onSaveInstanceState.  If your app crashes when the screen is rotated, you will not pass the project.
 
 }
