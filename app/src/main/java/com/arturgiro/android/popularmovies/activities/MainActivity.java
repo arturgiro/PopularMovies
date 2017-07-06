@@ -68,15 +68,13 @@ public class MainActivity extends AppCompatActivity implements GridFragment.OnGr
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-            Bundle args = new Bundle();
-            args.putParcelable(MOVIE_IDENTIFIER, movie);
 
-            DetailFragment fragment = new DetailFragment();
-            fragment.setArguments(args);
+            DetailFragment fragment = DetailFragment.newInstance(movie);
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detail_container, fragment, DETAILFRAGMENT_TAG)
-                    .commit();
+                    .commitAllowingStateLoss();
+
         } else {
             Class destinationClass = DetailActivity.class;
             Intent intentToStartDetailActivity = new Intent(this, destinationClass);

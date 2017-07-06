@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.arturgiro.android.popularmovies.R;
@@ -56,6 +57,7 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
     private RecyclerView mMovieVideos;
     private VideoAdapter mVideoAdapter;
 
+    private ScrollView mDetailScroll;
     private ImageView mIvPosterDetail;
     private FloatingActionButton mFab;
     private RelativeLayout mRelativeLayout;
@@ -63,6 +65,7 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
     private TextView mTvReleaseDate;
     private TextView mTvOriginalTitle;
     private TextView mTvOverview;
+    private TextView mTvEmpty;
 
     public DetailFragment() {
 
@@ -97,11 +100,13 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        mDetailScroll = (ScrollView) rootView.findViewById(R.id.scrollDetail);
         mIvPosterDetail = (ImageView) rootView.findViewById(R.id.iv_poster_detail);
         mTvUserRate = (TextView) rootView.findViewById(R.id.tv_detail_user_rate);
         mTvReleaseDate = (TextView) rootView.findViewById(R.id.tv_detail_release_date);
         mTvOriginalTitle = (TextView) rootView.findViewById(R.id.tv_detail_original_title);
         mTvOverview = (TextView) rootView.findViewById(R.id.tv_detail_overview);
+        mTvEmpty = (TextView) rootView.findViewById(R.id.tv_empty_message_display);
 
         mRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.relative_layout_detail);
         mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -134,11 +139,15 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
             else
                 mFab.setImageResource(R.drawable.ic_star_border_black_24dp);
         }
+        else
+            showEmptyMessage();
 
         return rootView;
     }
 
     private void showMovie() {
+
+        showMovieData();
 
         URL posterUrl = NetworkUtils.buildPosterUrl(mMovie.getPosterPath(), DETAIL_POSTER_SIZE);
         Picasso.with(getContext()).load(posterUrl.toString()).into(mIvPosterDetail);
@@ -210,5 +219,19 @@ public class DetailFragment extends Fragment implements VideoAdapter.VideoAdapte
         }
 
         super.onActivityCreated(savedInstanceState);
+    }
+
+    private void showMovieData() {
+        //Hide the empty message
+        mTvEmpty.setVisibility(View.INVISIBLE);
+        //show the movie information
+        mDetailScroll.setVisibility(View.VISIBLE);
+    }
+
+    private void showEmptyMessage() {
+        /* First, hide the currently visible data */
+        mDetailScroll.setVisibility(View.INVISIBLE);
+        /* Then, show the error */
+        mTvEmpty.setVisibility(View.VISIBLE);
     }
 }

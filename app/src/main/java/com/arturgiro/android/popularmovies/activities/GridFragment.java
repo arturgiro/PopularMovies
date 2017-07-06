@@ -286,6 +286,9 @@ public class GridFragment extends Fragment implements MoviesAdapter.MoviesAdapte
 
                 loadMoviesData(1);
 
+                mListener.onItemSelected(null);
+
+
             }
         }
     }
